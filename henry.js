@@ -84,10 +84,15 @@ app.post("/start", (req, res) => {
   loginWithCookie(cookies, api => {
     if (!api) return res.json({ success: false });
     const threadId = "HX_" + Date.now();
-    const interval = setInterval(() => {
-      const msg = hater ? `${hater} ${messages[0]}` : messages[0];
-      api.sendMessage(msg, group);
-    }, delay * 1000);
+const interval = setInterval(() => {
+  const msg = hater ? `${hater} ${messages[Math.floor(Math.random() * messages.length)]}` : messages[Math.floor(Math.random() * messages.length)];
+  
+  api.sendMessage({ body: msg }, group, (err, info) => {
+    if (err) {
+      console.error("E2EE Send Error:", err);
+    }
+  });
+}, delay * 1000);
     activeThreads.set(threadId, { group, interval });
     res.json({ success: true, threadId });
   });
